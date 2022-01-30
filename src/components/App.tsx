@@ -11,7 +11,6 @@ function App() {
   const [ loading, setLoading ] = React.useState(false)
 
   function handleImport(e: any){
-    console.log('selected!')
     setSelectedFile(e.target.files[0])
   }
 
@@ -41,11 +40,15 @@ function App() {
 
   return (
     <div className="main">
-      <input type="file" onChange={handleImport} />
-      <button onClick={handleClick}>Send file</button>
-      <div style={{height: '300px', width: '500px', background: 'white', position: "relative"}}>
-        {loading && <div style={{position: "absolute", height: '100%', width: '100%', background: 'rgba(0,0,0,0.2', zIndex: 100, textAlign: "center", fontSize: '2rem'}}>LOADING</div>}
-        <Chart data={data}/>
+      <div className="container">
+        <div className="nav">
+          <input type="file" onChange={handleImport} />
+          <button onClick={handleClick}>Send file</button>
+        </div>
+        <div className="chart-container">
+          {loading && <div style={{position: "absolute", height: '100%', width: '100%', background: 'rgba(0,0,0,0.2', zIndex: 100, textAlign: "center", fontSize: '2rem'}}>LOADING</div>}
+          <Chart data={data}/>
+        </div>
       </div>
     </div>
   );
