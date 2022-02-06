@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import useAppContext from './appContext/useAppContext'
 
 const mock_data = [
   {
@@ -44,14 +45,14 @@ const secondsToMins = (seconds) => {
     return convertedTime
 }
 
-const Chart = ({data}) => {
-
+const Chart = () => {
+    const data = useAppContext().store.chartData
     const getIntersectionPercentage = (data, val) => {
         const min = Math.min( ...data ) 
         const max = Math.max( ...data ) 
         return 100 - ((val - min)/(max - min))*100
     }
-    const proc = getIntersectionPercentage((data || mock_data).map(el => el.alfa1), 0.75)
+    const proc = getIntersectionPercentage((data || []).map(el => el.alfa1), 0.75)
 
     return (
       <ResponsiveContainer width="100%" height="100%">
@@ -60,7 +61,7 @@ const Chart = ({data}) => {
         //   height={300}
           data={data || mock_data}
           margin={{
-            top: 5,
+            top: 20,
             right: 10,
             left: 10,
             bottom: 5,
