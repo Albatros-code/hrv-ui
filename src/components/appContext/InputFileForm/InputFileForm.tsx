@@ -11,7 +11,9 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import axios from 'axios'
-import useAppContext from './appContext/useAppContext'
+import useAppContext from '../useAppContext'
+
+import { DivContainer, AccordionDetailsStyled, DivExpandedLeftSetion } from './components/styled'
 
 async function handleSend(file, params){
     const formData = new FormData()
@@ -34,12 +36,13 @@ const InputFileForm = () => {
     const { dispatch } = useAppContext()
     const [ expanded, setExpanded ] = React.useState(false)
 
-    const { control, handleSubmit } = useForm({
+    const { control, handleSubmit, getValues, setValue } = useForm({
         defaultValues: {
             file: '' as any,
             step: 120,
-            window: 100
-        }
+            window: 120
+        },
+        shouldUnregister: false
     });
 
     const onSubmit = async (data) => {
@@ -52,11 +55,10 @@ const InputFileForm = () => {
     }
 
     return (
-        <div style={{height: '100%', width: '100%'}}>
+        <DivContainer>
             <form  onSubmit={handleSubmit(onSubmit)}>
                 <Accordion className="accordion" expanded={expanded} onChange={() => {setExpanded(prev => !prev)}}>
                     <AccordionSummary
-                    //  style={{background: 'red', minHeight: '64px'}}
                     expandIcon={<ExpandMoreIcon style={{margin: '0 1rem'}}/>}
                     aria-controls="panel1a-content"
                     id="panel1a-header"
@@ -69,10 +71,11 @@ const InputFileForm = () => {
                                 <FormControl style={{width: '100%'}}>
                                     <InputLabel shrink={true} htmlFor="component-outlined">Name</InputLabel>
                                     <Typography zIndex={0} variant="subtitle1" style={{color: (field.value) ? 'initial' : 'rgba(0, 0, 0, 0.6)', position: 'absolute', top: '50%', transform: 'translateY(-50%)', paddingLeft: '14px'}}>
-                                    {field.value ? field.value.name : 'No file selected...'}
+                                        {field.value?.name || 'No file selected...'}
                                     </Typography>
                                     <OutlinedInput
                                     onChange={(e: any) => {
+                                        e.target.blur()
                                         field.onChange({target: {value: e.target.files[0]}})
                                         if (!expanded) handleSubmit(onSubmit)()
                                     }}
@@ -80,14 +83,14 @@ const InputFileForm = () => {
                                     label="Name"
                                     notched={true}
                                     size="small"
-                                    inputProps={{type: "file", accept:".fit", style:{opacity: 0}}}
+                                    inputProps={{type: "file", accept:".fit", style:{opacity: 0}, tabIndex: 0}}
                                     />
                                 </FormControl>
                             )}}
                         />
                     </AccordionSummary>
-                    <AccordionDetails style={{display: 'flex', justifyContent: 'space-between', paddingRight: '72px'}}>
-                        <div>
+                    <AccordionDetailsStyled>
+                        <DivExpandedLeftSetion>
                             <Controller
                                 name="step"
                                 control={control}
@@ -115,13 +118,13 @@ const InputFileForm = () => {
                                     />
                                 )}
                             />
-                        </div>
-                        <Button type="submit" variant="contained" disableElevation>Submit data</Button>
+                        </DivExpandedLeftSetion>
+                        <Button style={{whiteSpace: "nowrap"}} type="submit" variant="contained" disableElevation>Submit data</Button>
                         
-                    </AccordionDetails>
+                    </AccordionDetailsStyled>
                 </Accordion>
             </form>
-        </div>
+        </DivContainer>
     )
 }
 

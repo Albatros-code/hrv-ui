@@ -14,29 +14,34 @@ const StyledDiv = styled('div')({
     zIndex: '1001',
 })
 
-const changeTabIndex = (childNodes) => {
+const changeTabIndex = (childNodes: HTMLElement[], isFocusable: boolean) => {
+    childNodes.forEach(el => {el.tabIndex = isFocusable ? 0 : -1})
+}
+
+const getFocusableNodes = (childNodes: NodeListOf<any>, result: HTMLElement[]) => {
     childNodes.forEach(el => {
-        el.tabIndex = -1
-        changeTabIndex(el.childNodes)
+        if (el.tabIndex === 0) result.push(el) 
+        if (el.childNodes) getFocusableNodes(el.childNodes, result)
     })
 }
 
 const LoadingWrapper = ({children}) => {
     const { loading } = useAppContext().store
-
+    
+    const firstNode = React.useRef<HTMLDivElement>(null)
+    const focusableNodes = React.useRef<HTMLElement[]>([])
 
     React.useEffect(() => {
-        if (loading) changeTabIndex(refs)
+        const nodesToCheck = firstNode.current?.parentNode?.childNodes
+        const nodesToUpdate = focusableNodes.current
+        if(nodesToCheck && loading)  getFocusableNodes(nodesToCheck, focusableNodes.current)
+        if(nodesToUpdate.length > 0) changeTabIndex(nodesToUpdate, !loading)
     }, [loading])
-
-    const refs: any[] = []
 
     return (
         <>
-            {loading ? React.Children.map(children, (element) => {
-                return React.cloneElement(element, { ref: (el) => {refs.push(el)} });
-            }) : children}
-            {(loading) && <StyledDiv><CircularProgress /></StyledDiv>}
+            {children}
+            {loading && <StyledDiv ref={firstNode}><CircularProgress /></StyledDiv>}
         </>
     )
 }

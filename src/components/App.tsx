@@ -1,6 +1,6 @@
 import '../styles/App.css';
 import Chart from './Chart';
-import InputFileForm from './InputFileForm'
+import InputFileForm from './appContext/InputFileForm/InputFileForm'
 import LoadingWrapper from './LoadingWrapper';
 
 function App() {
@@ -9,9 +9,9 @@ function App() {
     <div className="main">
       <div className="container">
           <LoadingWrapper>
-            <div className="nav">
+            {/* <div className="nav"> */}
               <InputFileForm/>
-            </div> 
+            {/* </div>  */}
             <div className="chart-container">
               {/* {(loading || true) && <div className="chart-container-loading"><CircularProgress /></div>} */}
                 <Chart/>
